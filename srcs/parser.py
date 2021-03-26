@@ -6,7 +6,7 @@ def parser(file):
         print(lines)
 
         puzzel_size = None
-        matrix = []
+        puzzel = []
 
         for line in lines:
             if line.startswith("#"):
@@ -19,10 +19,10 @@ def parser(file):
             else:
                 row = [int(x) for x in line.split() if x.isdigit()]
                 if len(row) != puzzel_size:
-                    raise ValueError("Wrong format: matrix column nb wrong")
-                matrix.append(row)
-        if len(matrix) != puzzel_size:
-            raise ValueError("Wrong format: matrix row nb wrong")
+                    raise ValueError("Wrong format: puzzel column nb wrong")
+                puzzel.append(row)
+        if len(puzzel) != puzzel_size:
+            raise ValueError("Wrong format: puzzel row nb wrong")
 
-    print(matrix)
-    return matrix
+    print(puzzel)
+    return puzzel_size, puzzel
