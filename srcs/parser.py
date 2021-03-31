@@ -1,6 +1,6 @@
 def parser(file):
     """parse puzzel file and return a list containing rows of matrix"""
-    
+
     with open(file) as f:
         lines = f.readlines()
         print(lines)
