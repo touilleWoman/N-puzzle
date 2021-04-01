@@ -9,7 +9,7 @@ def parser(file):
         puzzel = []
 
         for line in lines:
-            if line.startswith("#"):
+            if line.startswith("#") or line == '\n':
                 pass
             elif puzzel_size is None:
                 try:

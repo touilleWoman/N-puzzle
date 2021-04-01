@@ -3,65 +3,72 @@ import numpy as np
 
 class Game:
     def __init__(self, puzzel_size, puzzel=None):
-        """init game with start board, postition of zero """
+        """init game with start board"""
 
         self.p_size = puzzel_size
         if puzzel:
-            self.start_board = np.asarray(puzzel)
+            self.start = np.asarray(puzzel)
         else:
-            self.random_start_board()
-        self.board = self.start_board.copy()
+            self.random_start()
+        # self.board = self.start.copy()
         self.check_board()
-        self.zero = self.position_of_zero()
+        # self.zero = self.position_of_zero()
         self.goal = self.generate_goal()
 
-    def random_start_board(self):
-        self.start_board = np.random.choice(
+    def random_start(self):
+        self.start = np.random.choice(
             [x for x in range(0, self.p_size * self.p_size)],
             replace=False,
             size=(self.p_size, self.p_size),
         )
 
-    def position_of_zero(self):
-        return np.where(self.board == 0)
+    # def position_of_zero(self):
+    #     return np.where(self.board == 0)
 
-    def directions(self):
-        if any(x < 0 or x > self.p_size for x in self.zero):
-            raise RuntimeError("Zero is outside the game board")
-        directions = ["left", "right", "up", "down"]
-        if self.zero[1] == 0:
-            directions.remove("left")
-        if self.zero[1] == self.p_size - 1:
-            directions.remove("right")
-        if self.zero[0] == 0:
-            directions.remove("up")
-        if self.zero[0] == self.p_size - 1:
-            directions.remove("down")
-        return directions
+    # def directions(self, zero=None):
+    #     if not zero:
+    #         zero = self.position_of_zero()
+    #     if any(x < 0 or x > self.p_size for x in zero):
+    #         raise RuntimeError("Zero is outside the game board")
+    #     directions = ["left", "right", "up", "down"]
+    #     if zero[1] == 0:
+    #         directions.remove("left")
+    #     if zero[1] == self.p_size - 1:
+    #         directions.remove("right")
+    #     if zero[0] == 0:
+    #         directions.remove("up")
+    #     if zero[0] == self.p_size - 1:
+    #         directions.remove("down")
+    #     return directions
 
     def check_board(self):
-        if self.board.shape != (self.p_size, self.p_size):
-            raise RuntimeError("Wrong shape of board:", self.board.shape)
-        if not np.array_equal(np.unique(self.board), np.arange(self.board.size)):
-            raise RuntimeError("Wrong element value of board:", self.board)
-        print("Game board checked, all good ^^")
+        if self.start.shape != (self.p_size, self.p_size):
+            raise RuntimeError("Wrong shape of board:", self.start.shape)
+        if not np.array_equal(np.unique(self.start), np.arange(self.start.size)):
+            raise RuntimeError("Wrong element value of board:", self.start)
+        print(f"Game board checked, all good ^^\n{self.start}")
 
-    def move(self, direction):
-        if direction not in self.directions():
-            raise RuntimeError("Error: Got out of the game board")
-        if direction == "left":
-            des = (self.zero[0], self.zero[1] - 1)
-        elif direction == "right":
-            des = (self.zero[0], self.zero[1] + 1)
-        elif direction == "up":
-            des = (self.zero[0] - 1, self.zero[1])
-        elif direction == "down":
-            des = (self.zero[0] + 1, self.zero[1])
-        self.board[des], self.board[self.zero] = self.board[self.zero], self.board[des]
-        print(
-            f"zero({self.zero}) move {direction} \n Destination({des})\n board:\n {self.board}"
-        )
-        self.zero = des
+    # def move_zero(self, direction, zero=None):
+    #     if not zero:
+    #         zero = self.position_of_zero()
+
+    #     if direction not in self.directions(): # delete later
+    #         raise RuntimeError("Error: Got out of the game board")
+
+
+    #     if direction == "left":
+    #         des = (zero[0], zero[1] - 1)
+    #     elif direction == "right":
+    #         des = (zero[0], zero[1] + 1)
+    #     elif direction == "up":
+    #         des = (zero[0] - 1, zero[1])
+    #     elif direction == "down":
+    #         des = (zero[0] + 1, zero[1])
+    #     self.board[des], self.board[zero] = self.board[zero], self.board[des]
+    #     print(
+    #         f"zero({zero}) move {direction} \n Destination({des})\n board:\n {self.board}"
+    #     )
+    #     zero = des
 
     def generate_goal(self):
         p = Point(0, -1, self.p_size)
@@ -98,7 +105,7 @@ class Game:
                 else:
                     p.go_down()
                     break
-        print("goal:\n", board)
+        # print("goal:\n", board)
         return board
 
 

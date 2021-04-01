@@ -2,6 +2,7 @@ import click
 
 from game import Game
 from parser import parser
+from a_star import a_star
 
 
 @click.command()
@@ -26,9 +27,7 @@ def main(file, size):
         game = Game(size)
     else:
         raise SystemExit("Need puzzel size or puzzel file")
-    import ipdb
-
-    ipdb.set_trace()
+    a_star(game)
 
 
 if __name__ == "__main__":
