@@ -59,34 +59,45 @@ def h_cost(board, goal):
 
 
 class Node:
-    def __init__(self, board, g=None, h=None, parent=None):
+    def __init__(self, board, fcost=None, parent=None):
         self.board = board
-        self.g = g
-        self.h = h
+        self.fcost = fcost
         self.parent = parent
-        self.id = id(board)
     
     def __hash__(self):
         return hash(self.board.tobytes())
 
     def __eq__(self, other):
-        return (self.board == other.board).all()
+        return np.array_equal(self.board, other.board)
 
-
+def backtracking(node):
+    lst = []
+    while node.parent:
+        lst.insert(0, node.parent)
+        node = node.parent
+    for x in lst:
+        print(x.board)
 
 def a_star(game):
     opend = dict()
     closed = dict()
+    opencount = 0
     g = 0
-    current = Node(game.start, g=g, h=h_cost(game.start, game.goal))
+    current = Node(game.start, fcost=h_cost(game.start, game.goal) + g)
     opend[current] = current
+    opencount += 1
+
+    def cmp_fcost(x):
+        return x.fcost
 
     while opend:
-        current = min(opend.values(), key=lambda x:x.g + x.h)
+        current = min(opend.values(), key=cmp_fcost)
         closed[current] = current
         opend.pop(current)
         
-        if (current.board == game.goal).all():
+        if np.array_equal(current.board, game.goal):
+            backtracking(current)
+            print(f"complexity in time:{opencount}")
             return True
         drcs, zero = directions(current.board)
         g += 1
@@ -99,15 +110,14 @@ def a_star(game):
             h = h_cost(child.board, game.goal)
             if child in opend:
                 old = opend[child]
-                if h + g < old.h + old.g:
-                    old.g = g
-                    old.h = h
+                if h + g < old.fcost:
+                    old.fcost = g + h
                     old.parent = current
             else:
-                child.h = h
-                child.g = g
+                child.fcost = h + g
                 child.parent = current
                 opend[child] = child
+                opencount += 1
 
 
 
